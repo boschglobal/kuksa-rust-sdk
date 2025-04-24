@@ -158,10 +158,337 @@ pub mod proto {
                 }
             }
             pub mod v2 {
+                use value::TypedValue;
+
                 tonic::include_proto!("kuksa.val.v2");
 
                 pub const FILE_DESCRIPTOR_SET: &[u8] =
                     tonic::include_file_descriptor_set!("kuksa.val.v2_descriptor");
+
+                /// Indicates that a [`TypedValue`] cannot be converted to the
+                /// desired type because it its value has an incompatible type.
+                #[derive(Debug)]
+                pub struct IncompatibleValueTypeError {}
+
+                impl TryFrom<TypedValue> for u32 {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for u32 {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Uint32(v) => Ok(*v),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for Vec<u32> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for Vec<u32> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Uint32Array(v) => Ok(v.values.clone()),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for u64 {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for u64 {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Uint32(v) => Ok(*v as u64),
+                            TypedValue::Uint64(v) => Ok(*v),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for Vec<u64> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for Vec<u64> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Uint32Array(v) => {
+                                Ok(v.values.iter().map(|v| *v as u64).collect())
+                            }
+                            TypedValue::Uint64Array(v) => Ok(v.values.clone()),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for i32 {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for i32 {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Uint32(v) => Ok(*v as i32),
+                            TypedValue::Int32(v) => Ok(*v),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for Vec<i32> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for Vec<i32> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Uint32Array(v) => {
+                                Ok(v.values.iter().map(|v| *v as i32).collect())
+                            }
+                            TypedValue::Int32Array(v) => Ok(v.values.clone()),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for i64 {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for i64 {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Uint32(v) => Ok(*v as i64),
+                            TypedValue::Uint64(v) => Ok(*v as i64),
+                            TypedValue::Int32(v) => Ok(*v as i64),
+                            TypedValue::Int64(v) => Ok(*v),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for Vec<i64> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for Vec<i64> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Uint32Array(v) => {
+                                Ok(v.values.iter().map(|v| *v as i64).collect())
+                            }
+                            TypedValue::Uint64Array(v) => {
+                                Ok(v.values.iter().map(|v| *v as i64).collect())
+                            }
+                            TypedValue::Int32Array(v) => {
+                                Ok(v.values.iter().map(|v| *v as i64).collect())
+                            }
+                            TypedValue::Int64Array(v) => Ok(v.values.clone()),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for f32 {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for f32 {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Uint32(v) => Ok(*v as f32),
+                            TypedValue::Int32(v) => Ok(*v as f32),
+                            TypedValue::Float(v) => Ok(*v),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for Vec<f32> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for Vec<f32> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Uint32Array(v) => {
+                                Ok(v.values.iter().map(|v| *v as f32).collect())
+                            }
+                            TypedValue::Int32Array(v) => {
+                                Ok(v.values.iter().map(|v| *v as f32).collect())
+                            }
+                            TypedValue::FloatArray(v) => Ok(v.values.clone()),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for f64 {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for f64 {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Uint32(v) => Ok(*v as f64),
+                            TypedValue::Uint64(v) => Ok(*v as f64),
+                            TypedValue::Int32(v) => Ok(*v as f64),
+                            TypedValue::Int64(v) => Ok(*v as f64),
+                            TypedValue::Float(v) => Ok(*v as f64),
+                            TypedValue::Double(v) => Ok(*v),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for Vec<f64> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for Vec<f64> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Uint32Array(v) => {
+                                Ok(v.values.iter().map(|v| *v as f64).collect())
+                            }
+                            TypedValue::Uint64Array(v) => {
+                                Ok(v.values.iter().map(|v| *v as f64).collect())
+                            }
+                            TypedValue::Int32Array(v) => {
+                                Ok(v.values.iter().map(|v| *v as f64).collect())
+                            }
+                            TypedValue::Int64Array(v) => {
+                                Ok(v.values.iter().map(|v| *v as f64).collect())
+                            }
+                            TypedValue::FloatArray(v) => {
+                                Ok(v.values.iter().map(|v| *v as f64).collect())
+                            }
+                            TypedValue::DoubleArray(v) => Ok(v.values.clone()),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for String {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for String {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::String(v) => Ok(v.to_string()),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for Vec<String> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for Vec<String> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::StringArray(v) => Ok(v.values.clone()),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for bool {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for bool {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::Bool(v) => Ok(*v),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
+
+                impl TryFrom<TypedValue> for Vec<bool> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: TypedValue) -> Result<Self, Self::Error> {
+                        Self::try_from(&value)
+                    }
+                }
+
+                impl TryFrom<&TypedValue> for Vec<bool> {
+                    type Error = IncompatibleValueTypeError;
+                    fn try_from(value: &TypedValue) -> Result<Self, Self::Error> {
+                        match value {
+                            TypedValue::BoolArray(v) => Ok(v.values.clone()),
+                            _ => Err(IncompatibleValueTypeError {}),
+                        }
+                    }
+                }
             }
         }
     }
@@ -173,5 +500,182 @@ pub mod proto {
                 tonic::include_proto!("sdv.databroker.v1");
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::v2_proto::value::TypedValue;
+    use test_case::test_case;
+
+    #[test_case(
+        TypedValue::String("one".to_string()),
+        "one".to_string();
+        "for String")]
+    #[test_case(
+        TypedValue::StringArray(proto::kuksa::val::v2::StringArray { values: vec!["one".to_string(), "two".to_string()] }),
+        vec!["one".to_string(), "two".to_string()];
+        "for StringArray")]
+    #[test_case(
+        TypedValue::Bool(true),
+        true;
+        "for Bool")]
+    #[test_case(
+        TypedValue::BoolArray(proto::kuksa::val::v2::BoolArray { values: vec![true, false] }),
+        vec![true, false];
+        "for BoolArray")]
+    #[test_case(
+        TypedValue::Uint32(0x01234567_u32),
+        0x01234567_u32;
+        "for UInt32")]
+    #[test_case(
+        TypedValue::Uint32Array(proto::kuksa::val::v2::Uint32Array { values: vec![0x01234567_u32, 0x89abcdef_u32] }),
+        vec![0x01234567_u32, 0x89abcdef_u32];
+        "for UInt32Array")]
+    #[test_case(
+        TypedValue::Int32(0x01234567_i32),
+        0x01234567_i32;
+        "for Int32")]
+    #[test_case(
+        TypedValue::Int32Array(proto::kuksa::val::v2::Int32Array { values: vec![0x01234567_i32, 0x89abcdef_u32 as i32] }),
+        vec![0x01234567_i32, 0x89abcdef_u32 as i32];
+        "for Int32Array")]
+    #[test_case(
+        TypedValue::Uint32(0x01234567_u32),
+        0x01234567_u32 as i32;
+        "for UInt32 as Int32")]
+    #[test_case(
+        TypedValue::Uint32Array(proto::kuksa::val::v2::Uint32Array { values: vec![0x01234567_u32, 0x89abcdef_u32] }),
+        vec![0x01234567_u32 as i32, 0x89abcdef_u32 as i32];
+        "for UInt32Array as UInt32Array")]
+    #[test_case(
+        TypedValue::Uint64(0x0123456789abcdef_u64),
+        0x0123456789abcdef_u64;
+        "for UInt64")]
+    #[test_case(
+        TypedValue::Uint64Array(proto::kuksa::val::v2::Uint64Array { values: vec![0x0123456789abcdef_u64, 0x0123456789abcdef_u64] }),
+        vec![0x0123456789abcdef_u64, 0x0123456789abcdef_u64];
+        "for UInt64Array")]
+    #[test_case(
+        TypedValue::Uint32(0x01234567_u32),
+        0x01234567_u32 as u64;
+        "for UInt32 as UInt64")]
+    #[test_case(
+        TypedValue::Uint32Array(proto::kuksa::val::v2::Uint32Array { values: vec![0x01234567_u32, 0x89abcdef_u32] }),
+        vec![0x01234567_u32 as u64, 0x89abcdef_u32 as u64];
+        "for UInt32Array as UInt64Array")]
+    #[test_case(
+        TypedValue::Int64(0x0123456789abcdef_i64),
+        0x0123456789abcdef_i64;
+        "for Int64")]
+    #[test_case(
+        TypedValue::Int64Array(proto::kuksa::val::v2::Int64Array { values: vec![0x0123456789abcdef_i64, 0xfedcba9876543210_u64 as i64] }),
+        vec![0x0123456789abcdef_i64, 0xfedcba9876543210_u64 as i64];
+        "for Int64Array")]
+    #[test_case(
+        TypedValue::Uint32(0x01234567_u32),
+        0x01234567_u32 as i64;
+        "for UInt32 as Int64")]
+    #[test_case(
+        TypedValue::Uint32Array(proto::kuksa::val::v2::Uint32Array { values: vec![0x01234567_u32, 0x89abcdef_u32] }),
+        vec![0x01234567_u32 as i64, 0x89abcdef_u32 as i64];
+        "for UInt32Array as Int64Array")]
+    #[test_case(
+        TypedValue::Int32(0x01234567_i32),
+        0x01234567_i32 as i64;
+        "for Int32 as Int64")]
+    #[test_case(
+        TypedValue::Int32Array(proto::kuksa::val::v2::Int32Array { values: vec![0x01234567_i32, 0x89abcdef_u32 as i32] }),
+        vec![0x01234567_i32 as i64, (0x89abcdef_u32 as i32) as i64];
+        "for Int32Array as Int64Array")]
+    #[test_case(
+        TypedValue::Uint64(0xfedcba9876543210_u64),
+        0xfedcba9876543210_u64 as i64;
+        "for UInt64 as Int64")]
+    #[test_case(
+        TypedValue::Uint64Array(proto::kuksa::val::v2::Uint64Array { values: vec![0x0123456789abcdef_u64, 0xfedcba9876543210_u64] }),
+        vec![0x0123456789abcdef_u64 as i64, 0xfedcba9876543210_u64 as i64];
+        "for UInt64Array as Int64Array")]
+    #[test_case(
+        TypedValue::Float(34.345),
+        34.345 as f32;
+        "for Float")]
+    #[test_case(
+        TypedValue::FloatArray(proto::kuksa::val::v2::FloatArray { values: vec![34.345, -34.345] }),
+        vec![34.345 as f32, -34.345 as f32];
+        "for FloatArray")]
+    #[test_case(
+        TypedValue::Uint32(0x01234567_u32),
+        0x01234567_u32 as f32;
+        "for UInt32 as Float")]
+    #[test_case(
+        TypedValue::Uint32Array(proto::kuksa::val::v2::Uint32Array { values: vec![0x01234567_u32, 0x89abcdef_u32] }),
+        vec![0x01234567_u32 as f32, 0x89abcdef_u32 as f32];
+        "for UInt32Array as Float32Array")]
+    #[test_case(
+        TypedValue::Int32(0x01234567_i32),
+        0x01234567_i32 as f32;
+        "for Int32 as Float")]
+    #[test_case(
+        TypedValue::Int32Array(proto::kuksa::val::v2::Int32Array { values: vec![0x01234567_i32, 0x89abcdef_u32 as i32] }),
+        vec![0x01234567_i32 as f32, (0x89abcdef_u32 as i32) as f32];
+        "for Int32Array as FloatArray")]
+    #[test_case(
+        TypedValue::Double(34.345),
+        34.345 as f64;
+        "for Double")]
+    #[test_case(
+        TypedValue::DoubleArray(proto::kuksa::val::v2::DoubleArray { values: vec![34.345, -34.345] }),
+        vec![34.345 as f64, -34.345 as f64];
+        "for DoubleArray")]
+    #[test_case(
+        TypedValue::Float(34.345),
+        34.345_f32 as f64;
+        "for Float as Double")]
+    #[test_case(
+        TypedValue::FloatArray(proto::kuksa::val::v2::FloatArray { values: vec![34.345, -34.345] }),
+        vec![34.345_f32 as f64, -34.345_f32 as f64];
+        "for FloatArray as DoubleArray")]
+    #[test_case(
+        TypedValue::Uint32(0x89abcdef_u32),
+        0x89abcdef_u32 as f64;
+        "for UInt32 as Double")]
+    #[test_case(
+        TypedValue::Uint32Array(proto::kuksa::val::v2::Uint32Array { values: vec![0x01234567_u32, 0x89abcdef_u32] }),
+        vec![0x01234567_u32 as f64, 0x89abcdef_u32 as f64];
+        "for UInt32Array as DoubleArray")]
+    #[test_case(
+        TypedValue::Uint64(0xfedcba9876543210_u64),
+        0xfedcba9876543210_u64 as f64;
+        "for UInt64 as Double")]
+    #[test_case(
+        TypedValue::Uint64Array(proto::kuksa::val::v2::Uint64Array { values: vec![0x0123456789abcdef_u64, 0xfedcba9876543210_u64] }),
+        vec![0x0123456789abcdef_u64 as f64, 0xfedcba9876543210_u64 as f64];
+        "for UInt64Array as DoubleArray")]
+    #[test_case(
+        TypedValue::Int32(0x01234567_i32),
+        0x01234567_i32 as f64;
+        "for Int32 as Double")]
+    #[test_case(
+        TypedValue::Int32Array(proto::kuksa::val::v2::Int32Array { values: vec![0x01234567_i32, 0x89abcdef_u32 as i32] }),
+        vec![0x01234567_i32 as f64, (0x89abcdef_u32 as i32) as f64];
+        "for Int32Array as DoubleArray")]
+    #[test_case(
+        TypedValue::Int64(0x0123456789abcdef_i64),
+        0x0123456789abcdef_i64 as f64;
+        "for Int64 as Double")]
+    #[test_case(
+        TypedValue::Int64Array(proto::kuksa::val::v2::Int64Array { values: vec![0x0123456789abcdef_i64, 0xfedcba9876543210_u64 as i64] }),
+        vec![0x0123456789abcdef_i64, 0xfedcba9876543210_u64 as i64];
+        "for Int64Array as DoubleArray")]
+    fn test_try_from_typedvalue<T> (
+        data: TypedValue,
+        expected_value: T,
+    ) where 
+        T: Sized
+            + std::convert::TryFrom<proto::kuksa::val::v2::value::TypedValue>
+            + std::cmp::PartialEq {
+        assert!(T::try_from(data).is_ok_and(|v| v.eq(&expected_value)));
     }
 }

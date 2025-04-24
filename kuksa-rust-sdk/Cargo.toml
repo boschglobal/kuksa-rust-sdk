@@ -24,6 +24,7 @@ tonic = { workspace = true, features = ["transport", "channel", "codegen", "pros
 [dev-dependencies]
 prost = { workspace = true }
 prost-types = { workspace = true }
+test-case = "3.3.1"
 test-tag = "0.1.4"
 
 [build-dependencies]

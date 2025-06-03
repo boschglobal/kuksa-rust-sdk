@@ -161,7 +161,7 @@ async fn sample_subscribe(client: &mut KuksaClientV2) {
     let path_avg_speed = "Vehicle.AverageSpeed".to_string();
     let signals = vec![path_speed.clone(), path_avg_speed.clone()];
 
-    let result = client.subscribe(signals, None).await;
+    let result = client.subscribe(signals, None, None).await;
     match result {
         Ok(mut streaming) => {
             tokio::spawn(async move {
@@ -199,7 +199,7 @@ async fn sample_subscribe_by_id(client: &mut KuksaClientV2) {
     match signal_ids_result {
         Ok(path_ids_map) => {
             let signal_ids: Vec<i32> = path_ids_map.values().cloned().collect();
-            let result = client.subscribe_by_id(signal_ids, None).await;
+            let result = client.subscribe_by_id(signal_ids, None, None).await;
             match result {
                 Ok(mut streaming) => {
                     tokio::spawn(async move {

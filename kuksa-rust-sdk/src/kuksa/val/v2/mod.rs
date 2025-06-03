@@ -20,6 +20,7 @@ use crate::proto::kuksa::val::v2::{
     GetServerInfoRequest, GetValueRequest, GetValuesRequest, ListMetadataRequest,
     PublishValueRequest, SignalId, SubscribeByIdRequest, SubscribeRequest, Value,
 };
+use crate::v2_proto::Filter;
 use http::Uri;
 use prost_types::Timestamp;
 use std::collections::HashMap;
@@ -145,20 +146,24 @@ impl common::ClientTraitV1 for KuksaClientV2 {
         &mut self,
         paths: Self::SubscribeType,
     ) -> Result<Self::SubscribeResponseType, ClientError> {
-        Ok(ClientTraitV2::subscribe(self, paths.convert_to_v2(), None)
-            .await
-            .unwrap()
-            .convert_to_v1())
+        Ok(
+            ClientTraitV2::subscribe(self, paths.convert_to_v2(), None, None)
+                .await
+                .unwrap()
+                .convert_to_v1(),
+        )
     }
 
     async fn subscribe(
         &mut self,
         paths: Self::SubscribeType,
     ) -> Result<Self::SubscribeResponseType, ClientError> {
-        Ok(ClientTraitV2::subscribe(self, paths.convert_to_v2(), None)
-            .await
-            .unwrap()
-            .convert_to_v1())
+        Ok(
+            ClientTraitV2::subscribe(self, paths.convert_to_v2(), None, None)
+                .await
+                .unwrap()
+                .convert_to_v1(),
+        )
     }
 
     async fn set_target_values(
@@ -423,6 +428,7 @@ impl ClientTraitV2 for KuksaClientV2 {
         &mut self,
         signal_paths: Self::SubscribeType,
         buffer_size: Option<u32>,
+        min_sample_interval_ms: Option<u32>,
     ) -> Result<Self::SubscribeResponseType, ClientError> {
         let mut client = ValClient::with_interceptor(
             self.basic_client.get_channel().await?.clone(),
@@ -432,7 +438,10 @@ impl ClientTraitV2 for KuksaClientV2 {
         let subscribe_request = SubscribeRequest {
             signal_paths,
             buffer_size: buffer_size.unwrap_or(0),
-            filter: None,
+            filter: min_sample_interval_ms.map(|interval_ms| Filter {
+                min_sample_interval: Some(crate::v2_proto::SampleInterval { interval_ms }),
+                ..Default::default()
+            }),
         };
 
         match client.subscribe(subscribe_request).await {
@@ -463,6 +472,7 @@ impl ClientTraitV2 for KuksaClientV2 {
         &mut self,
         signal_ids: Self::SubscribeByIdType,
         buffer_size: Option<u32>,
+        min_sample_interval_ms: Option<u32>,
     ) -> Result<Self::SubscribeByIdResponseType, ClientError> {
         let mut client = ValClient::with_interceptor(
             self.basic_client.get_channel().await?.clone(),
@@ -472,7 +482,10 @@ impl ClientTraitV2 for KuksaClientV2 {
         let subscribe_by_id_request = SubscribeByIdRequest {
             signal_ids,
             buffer_size: buffer_size.unwrap_or(0),
-            filter: None,
+            filter: min_sample_interval_ms.map(|interval_ms| Filter {
+                min_sample_interval: Some(crate::v2_proto::SampleInterval { interval_ms }),
+                ..Default::default()
+            }),
         };
 
         match client.subscribe_by_id(subscribe_by_id_request).await {
@@ -1167,6 +1180,7 @@ mod tests {
                     "Vehicle.Body.Raindetection.Intensity".to_string(),
                 ],
                 None,
+                None,
             )
             .await
             .unwrap();
@@ -1190,6 +1204,7 @@ mod tests {
                     "Vehicle.AverageSpeed".to_string(),
                     "Vehicle.Body.Raindetection.Intensity".to_string(),
                 ],
+                None,
                 None,
             )
             .await
@@ -1229,7 +1244,7 @@ mod tests {
     async fn test_subscribe_to_empty_path_will_return_not_found() {
         let mut client = KuksaClientV2::new_test_client(Some(Read));
 
-        let response = client.subscribe(vec!["".to_string()], None).await;
+        let response = client.subscribe(vec!["".to_string()], None, None).await;
         assert!(response.is_err());
 
         let err = response.unwrap_err();
@@ -1242,7 +1257,7 @@ mod tests {
         let mut client = KuksaClientV2::new_test_client(Some(Read));
 
         let response = client
-            .subscribe(vec!["Vehicle.Some.Invalid.Path".to_string()], None)
+            .subscribe(vec!["Vehicle.Some.Invalid.Path".to_string()], None, None)
             .await;
         assert!(response.is_err());
 
@@ -1256,7 +1271,7 @@ mod tests {
         let mut client = KuksaClientV2::new_test_client(Some(Read));
 
         let response = client
-            .subscribe(vec!["Vehicle.AverageSpeed".to_string()], Some(2048))
+            .subscribe(vec!["Vehicle.AverageSpeed".to_string()], Some(2048), None)
             .await;
         assert!(response.is_err());
 
@@ -1275,6 +1290,7 @@ mod tests {
                     "Vehicle.AverageSpeed".to_string(),
                     "Vehicle.Body.Raindetection.Intensity".to_string(),
                 ],
+                None,
                 None,
             )
             .await;
@@ -1296,7 +1312,7 @@ mod tests {
         let path_id_map = client.resolve_ids_for_paths(vss_paths).await.unwrap();
 
         let signal_ids: Vec<i32> = path_id_map.values().copied().collect();
-        let response = client.subscribe_by_id(signal_ids, None).await;
+        let response = client.subscribe_by_id(signal_ids, None, None).await;
         assert!(response.is_ok());
     }
 
@@ -1306,7 +1322,7 @@ mod tests {
         let mut client = KuksaClientV2::new_test_client(Some(Read));
 
         let signal_ids = vec![i32::MAX];
-        let response = client.subscribe_by_id(signal_ids, None).await;
+        let response = client.subscribe_by_id(signal_ids, None, None).await;
         assert!(response.is_err());
 
         let err = response.unwrap_err();
@@ -1325,7 +1341,7 @@ mod tests {
         let path_id_map = client.resolve_ids_for_paths(vss_paths).await.unwrap();
 
         let signal_ids: Vec<i32> = path_id_map.values().copied().collect();
-        let response = client.subscribe_by_id(signal_ids, Some(2048)).await;
+        let response = client.subscribe_by_id(signal_ids, Some(2048), None).await;
         assert!(response.is_err());
 
         let err = response.unwrap_err();
@@ -1338,7 +1354,7 @@ mod tests {
         let mut client = KuksaClientV2::new_test_client(None);
 
         let signal_ids = vec![0, 1, 2, 3, 4, 5];
-        let response = client.subscribe_by_id(signal_ids, Some(2048)).await;
+        let response = client.subscribe_by_id(signal_ids, Some(2048), None).await;
         assert!(response.is_err());
 
         let err = response.unwrap_err();

@@ -35,8 +35,13 @@ async fn main() {
 async fn execute_v2_calls(host: &'static str) {
     let mut v2_client: KuksaClientV2 = KuksaClientV2::from_host(host);
 
-    match common::ClientTraitV2::subscribe(&mut v2_client, vec!["Vehicle.Speed".to_owned()], None)
-        .await
+    match common::ClientTraitV2::subscribe(
+        &mut v2_client,
+        vec!["Vehicle.Speed".to_owned()],
+        None,
+        None,
+    )
+    .await
     {
         Ok(mut stream) => {
             println!("Successfully subscribed to {:?}!", "Vehicle.Speed");

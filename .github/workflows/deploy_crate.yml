@@ -21,3 +21,22 @@ jobs:
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_API_TOKEN }}
         run: cargo publish -p kuksa-rust-sdk
+
+      - name: Collect quality artifacts
+        uses: eclipse-dash/quevee@v1
+        id: quevee
+        with:
+          release_url: ${{ github.event.release.html_url }}
+          artifacts_readme: https://github.com/eclipse-kuksa/kuksa-rust-sdk/blob/main/README.md
+          artifacts_requirements: 
+          artifacts_testing: https://github.com/eclipse-kuksa/kuksa-rust-sdk/blob/main/.github/actions/run-lib-tests/action.yml
+          artifacts_documentation: https://docs.rs/kuksa-rust-sdk/latest/kuksa_rust_sdk/, https://crates.io/crates/kuksa-rust-sdk
+          artifacts_coding_guidelines: https://github.com/eclipse-kuksa/kuksa-rust-sdk/blob/main/CONTRIBUTING.md
+          artifacts_release_process: https://github.com/eclipse-kuksa/kuksa-rust-sdk/blob/main/RELEASE.md
+      - name: Upload quality manifest to release
+        uses: svenstaro/upload-release-action@v2
+        id: upload_manifest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ steps.quevee.outputs.manifest_file }}
+          tag: ${{ github.ref }}  

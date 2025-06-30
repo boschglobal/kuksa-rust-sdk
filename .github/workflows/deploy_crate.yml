@@ -28,7 +28,7 @@ jobs:
         with:
           release_url: ${{ github.event.release.html_url }}
           artifacts_readme: https://github.com/eclipse-kuksa/kuksa-rust-sdk/blob/main/README.md
-          artifacts_requirements: 
+          artifacts_requirements:
           artifacts_testing: https://github.com/eclipse-kuksa/kuksa-rust-sdk/blob/main/.github/actions/run-lib-tests/action.yml
           artifacts_documentation: https://docs.rs/kuksa-rust-sdk/latest/kuksa_rust_sdk/, https://crates.io/crates/kuksa-rust-sdk
           artifacts_coding_guidelines: https://github.com/eclipse-kuksa/kuksa-rust-sdk/blob/main/CONTRIBUTING.md
@@ -39,4 +39,4 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ steps.quevee.outputs.manifest_file }}
-          tag: ${{ github.ref }}  
+          tag: ${{ github.ref }}

@@ -317,7 +317,7 @@ pub fn to_uri(uri: impl AsRef<str>) -> Result<Uri, String> {
 
 impl Client {
     pub fn new(uri: Uri) -> Self {
-        info!("Creating client with URI: {}", uri);
+        info!("Creating client with URI: {uri}");
         Client {
             uri,
             token: None,

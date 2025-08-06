@@ -30,18 +30,18 @@ async fn main() {
     // Subscribe to paths
     let mut stream = client.subscribe(paths.clone()).await.unwrap();
 
-    println!("Subscribed to {:?}", paths);
+    println!("Subscribed to {paths:?}");
 
     loop {
         match stream.message().await {
             Ok(msg) => {
-                println!("Got message, will wait 5 seconds: {:?}", msg);
+                println!("Got message, will wait 5 seconds: {msg:?}");
                 // Simulate slow processing by sleeping
                 sleep(Duration::from_secs(1)).await;
                 thread::sleep(Duration::from_secs(5));
             }
             Err(e) => {
-                println!("Error while receiving message: {:?}", e);
+                println!("Error while receiving message: {e:?}");
                 break; // Exit loop on error
             }
         }

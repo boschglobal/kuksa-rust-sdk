@@ -51,11 +51,11 @@ async fn sample_get_signal(client: &mut KuksaClientV2) {
                 println!("{}: {:?}", signal, datapoint.value);
             }
             None => {
-                println!("{} not set", signal);
+                println!("{signal} not set");
             }
         },
         Err(err) => {
-            println!("Error: Could not retrieve Signal {}: {}", signal, err);
+            println!("Error: Could not retrieve Signal {signal}: {err}");
         }
     }
 }
@@ -71,24 +71,24 @@ async fn sample_get_signals(client: &mut KuksaClientV2) {
             let speed = datapoints.first();
             match speed {
                 Some(value) => {
-                    println!("{}: {:?}", path_speed, value);
+                    println!("{path_speed}: {value:?}");
                 }
                 None => {
-                    println!("{} not set", path_speed);
+                    println!("{path_speed} not set");
                 }
             }
             let average_speed = datapoints.last();
             match average_speed {
                 Some(value) => {
-                    println!("{}: {:?}", path_average_speed, value);
+                    println!("{path_average_speed}: {value:?}");
                 }
                 None => {
-                    println!("{} not set", path_average_speed);
+                    println!("{path_average_speed} not set");
                 }
             }
         }
         Err(err) => {
-            println!("An error occurred while retrieving the Signals: {}", err);
+            println!("An error occurred while retrieving the Signals: {err}");
         }
     }
 }
@@ -101,10 +101,10 @@ async fn sample_publish_value(client: &mut KuksaClientV2) {
     let result = client.publish_value(signal.clone(), value).await;
     match result {
         Ok(_) => {
-            println!("{} published successfully", signal);
+            println!("{signal} published successfully");
         }
         Err(err) => {
-            println!("Error: Could not publish {}: {}", signal, err);
+            println!("Error: Could not publish {signal}: {err}");
         }
     }
 }
@@ -125,7 +125,7 @@ async fn sample_provide_actuation(client: &mut KuksaClientV2) {
                     println!("Successfully registered ProvideActuationRequest for Vehicle.ADAS.ABS.IsEnabled.");
                 }
                 Err(err) => {
-                    println!("Error: Could not send ProvideActuationRequest {:?}", err);
+                    println!("Error: Could not send ProvideActuationRequest {err:?}");
                 }
             }
 
@@ -140,18 +140,18 @@ async fn sample_provide_actuation(client: &mut KuksaClientV2) {
                             let actuate_requests = batch_actuate_stream_request.actuate_requests;
                             for actuate_request in actuate_requests {
                                 // execute actuate_requests
-                                println!("Received ActuateRequest: {:?}", actuate_request);
+                                println!("Received ActuateRequest: {actuate_request:?}");
                             }
                         }
                     }
                     Err(err) => {
-                        println!("Error: Could not receive response {:?}", err);
+                        println!("Error: Could not receive response {err:?}");
                     }
                 }
             });
         }
         Err(err) => {
-            println!("Could not open provider stream: {}", err);
+            println!("Could not open provider stream: {err}");
         }
     }
 }
@@ -171,15 +171,15 @@ async fn sample_subscribe(client: &mut KuksaClientV2) {
                         let response = option.unwrap();
                         if let Some(speed) = response.entries.get(&path_speed) {
                             // do something with speed
-                            println!("{}: {:?}", path_speed, speed);
+                            println!("{path_speed}: {speed:?}");
                         };
                         if let Some(average_speed) = response.entries.get(&path_avg_speed) {
                             // do something with average_speed
-                            println!("{}: {:?}", path_avg_speed, average_speed);
+                            println!("{path_avg_speed}: {average_speed:?}");
                         };
                     }
                     Err(err) => {
-                        println!("Error: Could not receive response {:?}", err);
+                        println!("Error: Could not receive response {err:?}");
                     }
                 };
             });
@@ -211,29 +211,29 @@ async fn sample_subscribe_by_id(client: &mut KuksaClientV2) {
                                     response.entries.get(path_ids_map.get(&path_speed).unwrap())
                                 {
                                     // do something with speed
-                                    println!("{}: {:?}", path_speed, speed);
+                                    println!("{path_speed}: {speed:?}");
                                 };
                                 if let Some(average_speed) = response
                                     .entries
                                     .get(path_ids_map.get(&path_avg_speed).unwrap())
                                 {
                                     // do something with average_speed
-                                    println!("{}: {:?}", path_avg_speed, average_speed);
+                                    println!("{path_avg_speed}: {average_speed:?}");
                                 };
                             }
                             Err(err) => {
-                                println!("Error: Could not receive response: {:?}", err);
+                                println!("Error: Could not receive response: {err:?}");
                             }
                         };
                     });
                 }
                 Err(err) => {
-                    println!("Error subscribing to ids: {:?}", err);
+                    println!("Error subscribing to ids: {err:?}");
                 }
             }
         }
         Err(err) => {
-            println!("Error: Could not resolve ids for path: {:?}", err);
+            println!("Error: Could not resolve ids for path: {err:?}");
         }
     }
 }
@@ -247,11 +247,11 @@ async fn sample_list_metadata(client: &mut KuksaClientV2) {
         Ok(metadatas) => {
             for metadata in metadatas {
                 // do something with metadata
-                println!("Received metadata: {:?}", metadata);
+                println!("Received metadata: {metadata:?}");
             }
         }
         Err(err) => {
-            println!("Error: Could not retrieve Metadata: {:?}", err);
+            println!("Error: Could not retrieve Metadata: {err:?}");
         }
     }
 }
@@ -261,10 +261,10 @@ async fn sample_server_info(client: &mut KuksaClientV2) {
     match result {
         Ok(server_info) => {
             // do something with ServerInfo
-            println!("Received ServerInfo: {:?}", server_info);
+            println!("Received ServerInfo: {server_info:?}");
         }
         Err(err) => {
-            println!("Error: Could not retrieve ServerInfo: {:?}", err);
+            println!("Error: Could not retrieve ServerInfo: {err:?}");
         }
     }
 }

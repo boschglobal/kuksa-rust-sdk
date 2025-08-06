@@ -1446,7 +1446,7 @@ mod tests {
             ReadWrite => "actuate-provide-all.token",
             Read => "read-all.token",
         };
-        let file_path = format!("../submodules/kuksa-common/jwt/{}", file_name);
+        let file_path = format!("../submodules/kuksa-common/jwt/{file_name}");
         fs::read_to_string(file_path).expect("Could not read file")
     }
 

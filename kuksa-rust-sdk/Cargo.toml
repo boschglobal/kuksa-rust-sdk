@@ -8,6 +8,8 @@ description = "The Rust SDK for the Eclipse KUKSA Databroker."
 homepage = "https://eclipse-kuksa.github.io/kuksa-website/"
 repository = "https://github.com/eclipse-kuksa/kuksa-rust-sdk"
 readme = "../README.md"
+keywords = ["kuksa", "sdk", "sdv", "automotive", "eclipse"]
+categories = ["automotive"]
 
 [dependencies]
 futures-core = "0.3.31"

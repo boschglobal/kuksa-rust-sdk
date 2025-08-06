@@ -1,6 +1,6 @@
 [package]
 name = "kuksa-rust-sdk"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Eclipse KUKSA Project"]
 edition = "2021"
 license = "Apache-2.0"

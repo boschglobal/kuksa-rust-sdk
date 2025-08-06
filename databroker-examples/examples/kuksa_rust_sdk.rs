@@ -51,11 +51,11 @@ async fn execute_v2_calls(host: &'static str) {
                         let response = option.unwrap();
                         for entry_update in response.entries {
                             let datapoint = entry_update.1;
-                            println!("Vehicle.Speed: {:?}", datapoint);
+                            println!("Vehicle.Speed: {datapoint:?}");
                         }
                     }
                     Err(err) => {
-                        println!("Error: Could not receive response {:?}", err);
+                        println!("Error: Could not receive response {err:?}");
                     }
                 }
             });
@@ -90,7 +90,7 @@ async fn execute_v2_calls(host: &'static str) {
 
     match common::ClientTraitV2::get_value(&mut v2_client, "Vehicle.Speed".to_owned()).await {
         Ok(response) => {
-            println!("Got value for Vehicle.Speed: {:?}", response);
+            println!("Got value for Vehicle.Speed: {response:?}");
         }
         Err(err) => {
             println!(
@@ -113,11 +113,11 @@ async fn execute_v1_calls(host: &'static str) {
                         let response = option.unwrap();
                         for entry_update in response.updates {
                             let entry = entry_update.entry.unwrap();
-                            println!("Vehicle.Speed: {:?}", entry);
+                            println!("Vehicle.Speed: {entry:?}");
                         }
                     }
                     Err(err) => {
-                        println!("Error: Could not receive response {:?}", err);
+                        println!("Error: Could not receive response {err:?}");
                     }
                 }
             });
@@ -141,7 +141,7 @@ async fn execute_v1_calls(host: &'static str) {
             println!("Successfully set datapoints")
         }
         Err(err) => {
-            println!("Failed to set datapoints: {:?}", err)
+            println!("Failed to set datapoints: {err:?}")
         }
     }
 
@@ -152,10 +152,10 @@ async fn execute_v1_calls(host: &'static str) {
     .await
     {
         Ok(response) => {
-            println!("Got value for Vehicle.Speed: {:?}", response);
+            println!("Got value for Vehicle.Speed: {response:?}");
         }
         Err(err) => {
-            println!("Couldn't get value for Vehicle.Speed: {:?}", err)
+            println!("Couldn't get value for Vehicle.Speed: {err:?}")
         }
     }
 }
@@ -173,11 +173,11 @@ async fn execute_sdv_calls(host: &'static str) {
                     Ok(option) => {
                         let response = option.unwrap();
                         if let Some(speed) = response.fields.get("Vehicle.Speed") {
-                            println!("Vehicle.Speed: {:?}", speed);
+                            println!("Vehicle.Speed: {speed:?}");
                         };
                     }
                     Err(err) => {
-                        println!("Error: Could not receive response {:?}", err);
+                        println!("Error: Could not receive response {err:?}");
                     }
                 }
             });
@@ -201,7 +201,7 @@ async fn execute_sdv_calls(host: &'static str) {
             println!("Successfully set datapoints")
         }
         Err(err) => {
-            println!("Failed to set datapoints: {:?}", err)
+            println!("Failed to set datapoints: {err:?}")
         }
     }
 
@@ -212,10 +212,10 @@ async fn execute_sdv_calls(host: &'static str) {
     .await
     {
         Ok(response) => {
-            println!("Got value for Vehicle.Speed: {:?}", response);
+            println!("Got value for Vehicle.Speed: {response:?}");
         }
         Err(err) => {
-            println!("Failed to get value for Vehicle.Speed: {:?}", err)
+            println!("Failed to get value for Vehicle.Speed: {err:?}")
         }
     }
 }

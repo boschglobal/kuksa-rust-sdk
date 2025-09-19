@@ -29,7 +29,7 @@ jobs:
           release_url: ${{ github.event.release.html_url }}
           artifacts_readme: README.md
           artifacts_requirements:
-          artifacts_testing: .github/actions/run-lib-tests/action.yml
+          artifacts_testing:
           artifacts_documentation: https://docs.rs/kuksa-rust-sdk/${{ github.event.release.tag_name }}, https://crates.io/crates/kuksa-rust-sdk/${{ github.event.release.tag_name }}, README.md
           artifacts_coding_guidelines: CONTRIBUTING.md
           artifacts_release_process: RELEASE.md

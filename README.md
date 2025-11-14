@@ -43,7 +43,7 @@ async fn create_sdv_client() {
 
 ```rust
 async fn subscribe_to_vehicle_speed() {
-    match v2_client.subscribe(vec!["Vehicle.Speed".to_owned()], None).await
+    match v2_client.subscribe(vec!["Vehicle.Speed".to_owned()], None, None).await
     {
         Ok(mut stream) => {
             println!("Successfully subscribed to {:?}!", "Vehicle.Speed");
